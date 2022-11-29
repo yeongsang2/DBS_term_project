@@ -31,7 +31,7 @@ public class MainView {
         MainView mainView = new MainView();
         return mainView;
     }
-    public void showMainView() throws IOException, SQLException {
+    public void showMainView() throws IOException, SQLException, InterruptedException {
 
         /**
          * 1. 회원가입
@@ -128,7 +128,14 @@ public class MainView {
 
     }
 
-    private void goOut() {
+    private void goOut() throws IOException, SQLException, InterruptedException {
+        /**
+         * 외출 30분이내에 복귀 하지 않을시 좌석 공석 처리됨
+         */
+         System.out.println("회원번호를 입력해주세요");
+         String userId = br.readLine();
+         seatDao.goOutTemp(userId);
+
 
     }
 
