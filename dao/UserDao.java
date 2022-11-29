@@ -4,6 +4,7 @@ import domain.User;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 
 public class UserDao {
@@ -15,7 +16,7 @@ public class UserDao {
         con = Connect.getConnection();
     }
 
-    public static UserDao getUserDao() throws SQLException, ClassNotFoundException {
+    public static UserDao getInstance() throws SQLException, ClassNotFoundException {
         UserDao userDao = new UserDao();
         return userDao;
     }
@@ -34,4 +35,16 @@ public class UserDao {
     }
 
 
+    /**
+        return 값 1이면 존재, 0이면 없는 회원
+     */
+    public int login(String userId) throws SQLException {
+        String query = "select count(*) from user where user_id = ?";
+        pstmt = con.prepareStatement(query);
+        pstmt.setString(1, userId);
+        ResultSet rs = pstmt.executeQuery();
+
+        rs.next();
+        return rs.getInt(1);
+    }
 }

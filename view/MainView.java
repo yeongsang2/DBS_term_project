@@ -1,7 +1,9 @@
 package view;
 
 import com.sun.tools.javac.Main;
+import dao.SeatDao;
 import dao.UserDao;
+import domain.Location;
 import domain.User;
 import domain.UserType;
 
@@ -19,8 +21,11 @@ public class MainView {
     private static  BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
     private static StringTokenizer st;
     private static UserDao userDao;
+    private static SeatDao seatDao;
+
     private MainView() throws SQLException, ClassNotFoundException {
-        userDao = UserDao.getUserDao();
+        userDao = UserDao.getInstance();
+        seatDao = SeatDao.getInstance();
     }
     public static MainView getMainView() throws SQLException, ClassNotFoundException {
         MainView mainView = new MainView();
@@ -34,43 +39,45 @@ public class MainView {
          * 3. 외출
          * 4. 외출복귀
          * 5. 연장
-         * 6. 종료
+         * 6. 관리자 모드
+         * 7. 사용종료
+         * 8. 시스템종료
          */
-        System.out.println("----------------------------------");
-        System.out.println(" 1. 회원가입 2. 좌석예약 3. 외출      ");
-        System.out.println(" 4. 외출복귀 5. 좌석연장 6. 관리자모드 ");
-        System.out.println(" 7. 사용종료 8. 시스템 종료          ");
-        System.out.println("----------------------------------");
+        while(true) {
+            System.out.println("----------------------------------");
+            System.out.println(" 1. 회원가입 2. 좌석예약 3. 외출      ");
+            System.out.println(" 4. 외출복귀 5. 좌석연장 6. 관리자모드 ");
+            System.out.println(" 7. 사용종료 8. 시스템 종료          ");
+            System.out.println("----------------------------------");
 
-        //
-        int c = Integer.parseInt(br.readLine());
-        switch (c){
-            case 1:
-                signUp();
-                break;
-            case 2:
-                reserve();
-                break;
-            case 3:
-                goOut();
-                break;
-            case 4:
-                goBack();
-                break;
-            case 5:
-                extendSeat();
-                break;
-
-            case 6:
-                manageMode();
-                break;
-
-            case 7:
-                endUse();
-                break;
-            case 8:
-                exit(0);
-                break;
+            //
+            int c = Integer.parseInt(br.readLine());
+            switch (c) {
+                case 1:
+                    signUp();
+                    break;
+                case 2:
+                    reserve();
+                    break;
+                case 3:
+                    goOut();
+                    break;
+                case 4:
+                    goBack();
+                    break;
+                case 5:
+                    extendSeat();
+                    break;
+                case 6:
+                    manageMode();
+                    break;
+                case 7:
+                    endUse();
+                    break;
+                case 8:
+                    exit(0);
+                    break;
+            }
         }
     }
 
@@ -92,7 +99,32 @@ public class MainView {
                 break;
         }
     }
-    private void reserve() {
+    private void reserve() throws IOException, SQLException {
+
+        /**
+         * 회원 인증
+         */
+        System.out.println("회원번호를 입력해주세요");
+        String userId = br.readLine();
+        if(userDao.login(userId) == 1){
+
+            /**
+             * 좌석 선택
+             * 좌석보여주기, 좌석 선택하기
+             */
+            System.out.println("조망형 / 스마트 , A / B, 1층 / 2층");
+            st= new StringTokenizer(br.readLine());
+            int locationId = seatDao.showSeat(new Location(st.nextToken(), st.nextToken(), st.nextToken()));
+
+            //좌석 선택
+            System.out.println("선택할 좌석을 입력해주세요");
+            int seatNumber = Integer.parseInt(br.readLine());
+            seatDao.reserveSeat(userId,seatNumber, locationId);
+
+
+        }else {
+            System.out.println("잘못된 회원 번호 입니다.");
+        }
 
     }
 
