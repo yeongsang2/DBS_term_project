@@ -63,7 +63,7 @@ public class MainView {
                     goOut();
                     break;
                 case 4:
-                    goBack();
+                    comeBack();
                     break;
                 case 5:
                     extendSeat();
@@ -139,8 +139,11 @@ public class MainView {
 
     }
 
-    private void goBack() {
+    private void comeBack() throws IOException, SQLException { //복귀
 
+        System.out.println("회원번호를 입력해주세요");
+        String userId = br.readLine();
+        seatDao.comeBack(userId);
     }
 
     private void extendSeat() {

@@ -1,14 +1,10 @@
 package dao;
 
-import MyThread.GoOutThread;
 import domain.Location;
 
 import java.sql.*;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.TreeMap;
+import java.util.*;
 
 public class SeatDao {
 
@@ -93,7 +89,7 @@ public class SeatDao {
 
     }
 
-    public Boolean checkUse(String userId) throws SQLException {
+    private Boolean isUsed(String userId) throws SQLException {
 
         String query = "select state from user where user_id = ?";
         pstmt = con.prepareStatement(query);
@@ -149,7 +145,7 @@ public class SeatDao {
     public void goOutTemp(String userId) throws SQLException, InterruptedException {
 
         // 이용중인지 check
-        if(checkUse(userId)){
+        if(isUsed(userId)){
 
             //user_seat is_seated 상태 update
             pstmt = con.prepareStatement("update user_seat set is_seated = ? where user_id = ? and is_finished = ? ");
@@ -185,5 +181,34 @@ public class SeatDao {
         }else {
             System.out.println("사용중이 아닙니다");
         }
+    }
+
+    public void comeBack(String userId) throws SQLException {
+
+        if(!isSeated(userId)){ //외출중
+            //user_seat 테이블 수정
+            pstmt = con.prepareStatement("update user_seat set is_seated = ? where user_id = ?  and is_finished = ?");
+            pstmt.setBoolean(1, true);
+            pstmt.setString(2, userId);
+            pstmt.setBoolean(3,false);
+            pstmt.executeUpdate();
+
+            // userId 를 value로 가지고 있는 thread haspmap에서 삭제
+            threadMapHashMap.keySet().stream().filter(key -> threadMapHashMap.get(key) == userId).forEach(key -> threadMapHashMap.remove(key));
+
+            System.out.println("외출 복귀 되었습니다.");
+        }else{
+            System.out.println("외출 중이 아닙니다.");
+        }
+    }
+
+    private boolean isSeated(String userId) throws SQLException {
+
+        pstmt = con.prepareStatement("select is_seated from user_seat where is_seated = ? and is_finished = ?");
+        pstmt.setBoolean(1, false);
+        pstmt.setBoolean(2, false);
+        ResultSet rs = pstmt.executeQuery();
+        rs.next();
+        return rs.getBoolean(1);
     }
 }
