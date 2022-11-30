@@ -47,4 +47,5 @@ public class UserDao {
         rs.next();
         return rs.getInt(1);
     }
+
 }

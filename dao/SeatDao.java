@@ -10,7 +10,7 @@ public class SeatDao {
 
     private static Connection con;
     private static PreparedStatement pstmt;
-    private static HashMap<Thread, String> threadMapHashMap = new HashMap<>();
+    private static HashMap<Thread, String> threadMapHashMap =    new HashMap<>();
 
     private SeatDao() throws SQLException, ClassNotFoundException {
         con = Connect.getConnection();
@@ -294,4 +294,5 @@ public class SeatDao {
             System.out.println("사용중이 아닙니다.");
         }
     }
+
 }

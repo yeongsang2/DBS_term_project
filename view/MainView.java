@@ -1,6 +1,7 @@
 package view;
 
 import com.sun.tools.javac.Main;
+import dao.ManagerDao;
 import dao.SeatDao;
 import dao.UserDao;
 import domain.Location;
@@ -31,7 +32,7 @@ public class MainView {
         MainView mainView = new MainView();
         return mainView;
     }
-    public void showMainView() throws IOException, SQLException, InterruptedException {
+    public void showMainView() throws IOException, SQLException, InterruptedException, ClassNotFoundException {
 
         /**
          * 1. 회원가입
@@ -159,9 +160,37 @@ public class MainView {
         seatDao.endUse(userId);
     }
 
-    private void manageMode() {
+    private void manageMode() throws IOException, SQLException, ClassNotFoundException {
 
+        /**
+         *  - 공석처리 하기
+         *  - 이용중인 사용자 리스트 보기
+         */
+        System.out.println("관리자 번호를 입력해주세요");
+        String managerId = br.readLine();
+        ManagerDao managerDao = ManagerDao.getInstance();
+        if(managerDao.login(managerId) == 1 ){
+            System.out.println("1. 공석처리 ,2. 현재 사용중인 사람들 보기");
+            int c = Integer.parseInt(br.readLine());
+            switch (c){
+                case 1:
+                    //좌석 선택
+                    System.out.println("조망형 / 스마트 , A / B, 1층 / 2층");
+                    st= new StringTokenizer(br.readLine());
+                    int locationId = seatDao.showSeat(new Location(st.nextToken(), st.nextToken(), st.nextToken()));
 
+                    //공석 처리
+                    System.out.println("공석 처리할 좌석을 입력해주세요");
+                    int seatNumber = Integer.parseInt(br.readLine());
+                    managerDao.doEmpty(locationId, seatNumber);
+                case 2:
+                    // 사용중인 사람들 나열
+                    managerDao.showUseInUser();
+
+            }
+        }else {
+            System.out.println("등록되지 않은 관리자 입니다.");
+        }
     }
 
 
