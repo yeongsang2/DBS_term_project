@@ -121,6 +121,7 @@ public class SeatDao {
         pstmt = con.prepareStatement("update seat set use_in_number = use_in_number - 1 where location_id = ? and seat_no = ?");
         pstmt.setInt(1, locationId);
         pstmt.setInt(2, seatNumber);
+        pstmt.executeUpdate();
 
         // user_seat 변경
         pstmt = con.prepareStatement("update user_seat set is_finished = ? and is_seated = ? where user_id = ?");
@@ -134,12 +135,14 @@ public class SeatDao {
         pstmt.setBoolean(1, false);
         pstmt.setString(2, userId);
         pstmt.executeUpdate();
-        System.out.println("공석처리");
 
         // room 이용자수 변경 ,, - 1
         pstmt = con.prepareStatement("update room set use_seat_number = use_seat_number -1  where location_id = ?");
         pstmt.setInt(1, locationId);
         pstmt.executeUpdate();
+
+        System.out.println("일정시간 돌오지 않아" +userId + "을 공석처리합니다.");
+
     }
 
     public void goOutTemp(String userId) throws SQLException, InterruptedException {
@@ -242,7 +245,53 @@ public class SeatDao {
             }
 
         }else {
-            System.out.println("사용 중이 아닙니다.");
+            System.out.println("사용중이 아닙니다.");
+        }
+    }
+
+    public void endUse(String userId) throws SQLException {
+        if(isUsed(userId)){
+
+            int locationId;
+            int seatNumber;
+
+            // user_seat 이용해서 location_id, seatNumber 조회
+            pstmt = con.prepareStatement("select location_id, seat_no from user_seat where user_id = ? and is_finished = ?");
+            pstmt.setString(1, userId);
+            pstmt.setBoolean(2, false);
+            ResultSet rs = pstmt.executeQuery();
+            rs.next();
+            locationId = rs.getInt(1);
+            seatNumber = rs.getInt(2);
+
+            // seat table use_in_number 감소
+            pstmt = con.prepareStatement("update seat set use_in_number = use_in_number - 1 where location_id = ? and seat_no = ?");
+            pstmt.setInt(1, locationId);
+            pstmt.setInt(2, seatNumber);
+            pstmt.executeUpdate();
+
+            // user_seat 변경
+            pstmt = con.prepareStatement("update user_seat set is_finished = ? and is_seated = ? where user_id = ?");
+            pstmt.setBoolean(1, true);
+            pstmt.setBoolean(2, false);
+            pstmt.setString(3,userId);
+            pstmt.executeUpdate();
+
+            // user state 변경
+            pstmt = con.prepareStatement("update user set state = ? where user_id = ?");
+            pstmt.setBoolean(1, false);
+            pstmt.setString(2, userId);
+            pstmt.executeUpdate();
+
+            // room 이용자수 변경 ,, - 1
+            pstmt = con.prepareStatement("update room set use_seat_number = use_seat_number -1  where location_id = ?");
+            pstmt.setInt(1, locationId);
+            pstmt.executeUpdate();
+
+            System.out.println("도서관 이용이 종료되었습니다.");
+
+        }else {
+            System.out.println("사용중이 아닙니다.");
         }
     }
 }

@@ -46,8 +46,8 @@ public class MainView {
         while(true) {
             System.out.println("----------------------------------");
             System.out.println(" 1. 회원가입 2. 좌석예약 3. 외출      ");
-            System.out.println(" 4. 외출복귀 5. 좌석연장 6. 관리자모드 ");
-            System.out.println(" 7. 사용종료 8. 시스템 종료          ");
+            System.out.println(" 4. 외출복귀 5. 좌석연장 6. 사용종료 ");
+            System.out.println(" 7. 관리자모드 8. 시스템 종료          ");
             System.out.println("----------------------------------");
 
             //
@@ -69,10 +69,10 @@ public class MainView {
                     extendSeat();
                     break;
                 case 6:
-                    manageMode();
+                    endUse();
                     break;
                 case 7:
-                    endUse();
+                    manageMode();
                     break;
                 case 8:
                     exit(0);
@@ -152,12 +152,16 @@ public class MainView {
         seatDao.extendSeat(userId);
     }
 
+    private void endUse() throws IOException, SQLException {
+
+        System.out.println("회원번호를 입력해주세요");
+        String userId = br.readLine();
+        seatDao.endUse(userId);
+    }
+
     private void manageMode() {
 
 
-    }
-
-    private void endUse() {
     }
 
 
