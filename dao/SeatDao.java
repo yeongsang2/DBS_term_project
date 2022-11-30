@@ -211,4 +211,38 @@ public class SeatDao {
         rs.next();
         return rs.getBoolean(1);
     }
+
+    public void extendSeat(String userId) throws SQLException {
+
+        if(isUsed(userId)){
+            //연장 횟수 조회
+            pstmt = con.prepareStatement("select user_seat_id, extend_number from user_seat where user_id = ? and is_finished = ?");
+            pstmt.setString(1, userId);
+            pstmt.setBoolean(2,false);
+            ResultSet rs = pstmt.executeQuery();
+            rs.next();
+
+            int userSeatId = rs.getInt(1);
+            int extendNumber = rs.getInt(2);
+            if(extendNumber >= 3){
+                System.out.println("이미 3번 연장했습니다.");
+            }else {
+
+                // user_seats에 extend_number에 +1
+                pstmt = con.prepareStatement("update user_seat set extend_number = extend_number +1 where user_seat_id = ?");
+                pstmt.setInt(1,userSeatId);
+                pstmt.executeUpdate();
+
+                // 끝나는 시간 4시간 연장 end_time 에 4 hour add
+                pstmt = con.prepareStatement("update user_seat set end_time = DATE_ADD(end_time, INTERVAL 4 HOUR) where user_seat_id = ?");
+                pstmt.setInt(1,userSeatId);
+                pstmt.executeUpdate();
+                System.out.println(extendNumber+1 + "회 연장 완료 되었습니다");
+
+            }
+
+        }else {
+            System.out.println("사용 중이 아닙니다.");
+        }
+    }
 }

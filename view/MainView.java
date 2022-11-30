@@ -146,8 +146,10 @@ public class MainView {
         seatDao.comeBack(userId);
     }
 
-    private void extendSeat() {
-
+    private void extendSeat() throws IOException, SQLException {
+        System.out.println("회원번호를 입력해주세요");
+        String userId = br.readLine();
+        seatDao.extendSeat(userId);
     }
 
     private void manageMode() {
