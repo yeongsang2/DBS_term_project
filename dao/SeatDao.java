@@ -89,7 +89,7 @@ public class SeatDao {
 
     }
 
-    private Boolean isUsed(String userId) throws SQLException {
+    public Boolean isUsed(String userId) throws SQLException {
 
         String query = "select state from user where user_id = ?";
         pstmt = con.prepareStatement(query);
@@ -165,7 +165,7 @@ public class SeatDao {
                     int time = 1;
                     try {
                         while (true) {
-                            if(time == 3600){
+                            if(time == 5){
                                 doEmptySeat(this);
                             }
                             Thread.sleep(1000);

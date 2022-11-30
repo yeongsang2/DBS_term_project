@@ -107,7 +107,13 @@ public class MainView {
          */
         System.out.println("회원번호를 입력해주세요");
         String userId = br.readLine();
+
         if(userDao.login(userId) == 1){
+
+            if(seatDao.isUsed(userId)){
+                System.out.println("이미 사용중입니다.");
+                return;
+            }
 
             /**
              * 좌석 선택
