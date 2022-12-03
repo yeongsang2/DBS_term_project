@@ -19,7 +19,7 @@ public class ManagerDao {
         return managerDao;
     }
 
-
+    //관리자 로그인
     public int login(String managerId) throws SQLException {
 
         pstmt = con.prepareStatement("select count(*) from manager where manager_id = '2020039111'");
@@ -29,6 +29,7 @@ public class ManagerDao {
         return rs.getInt(1);
     }
 
+    //특정 좌석 공석처리
     public void doEmpty(int locationId, int seatNumber) throws SQLException {
 
         String userId;
@@ -73,6 +74,7 @@ public class ManagerDao {
 
     }
 
+    //현재 도서관 사용중인 회원 보여줌
     public void showUseInUser() throws SQLException {
         pstmt = con.prepareStatement("select u.name, u.user_type, u.major, us.start_time, us.end_time, l.name, l.floor, l.sector, us.seat_no from user as u left join user_seat as us on u.user_id = us.user_id  left join location as l on us.location_id = l.location_id where us.is_finished = false;");
         ResultSet rs = pstmt.executeQuery();

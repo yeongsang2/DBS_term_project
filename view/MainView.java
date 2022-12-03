@@ -42,14 +42,15 @@ public class MainView {
          * 5. 연장
          * 6. 관리자 모드
          * 7. 사용종료
-         * 8. 시스템종료
+         * 8. 좌석사용이력
+         * 9. 시스템종료
          */
         while(true) {
-            System.out.println("----------------------------------");
+            System.out.println("--------------------------------------");
             System.out.println(" 1. 회원가입 2. 좌석예약 3. 외출      ");
-            System.out.println(" 4. 외출복귀 5. 좌석연장 6. 사용종료 ");
-            System.out.println(" 7. 관리자모드 8. 시스템 종료          ");
-            System.out.println("----------------------------------");
+            System.out.println(" 4. 외출복귀 5. 좌석연장 6. 사용종료    ");
+            System.out.println(" 7. 관리자모드 8. 좌석사용이력 9. 시스템 종료 ");
+            System.out.println("---------------------------------------");
 
             //
             int c = Integer.parseInt(br.readLine());
@@ -76,11 +77,15 @@ public class MainView {
                     manageMode();
                     break;
                 case 8:
+                    useHistory();
+                    break;
+                case 9:
                     exit(0);
                     break;
             }
         }
     }
+
 
     public void signUp() throws IOException, SQLException {
         System.out.println(" 학생이면 1, 일반인이면 2번을 눌러주세요");
@@ -130,7 +135,7 @@ public class MainView {
 
 
         }else {
-            System.out.println("잘못된 회원 번호 입니다.");
+            System.out.println("존재하지 않는 회원 번호 입니다.");
         }
 
     }
@@ -166,6 +171,7 @@ public class MainView {
         seatDao.endUse(userId);
     }
 
+    // 관리자모드
     private void manageMode() throws IOException, SQLException, ClassNotFoundException {
 
         /**
@@ -199,5 +205,16 @@ public class MainView {
         }
     }
 
+    //좌석 사용 이력
+    private void useHistory() throws IOException, SQLException {
 
+        System.out.println("회원번호를 입력해주세요");
+        String userId = br.readLine();
+        if(userDao.login(userId) == 1 ){
+            userDao.showUseHistory(userId);
+        }else{
+            System.out.println("존재하지 않는 회원번호 입니다.");
+        }
+
+    }
 }
