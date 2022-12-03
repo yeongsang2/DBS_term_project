@@ -93,4 +93,17 @@ public class UserDao {
         return true;
 
     }
+
+    public void showMySeat(String userId) throws SQLException {
+
+        pstmt = con.prepareStatement("select u.name, us.start_time, us.end_time, l.name, l.floor, l.sector, us.seat_no from user as u left join user_seat as us on u.user_id = us.user_id  left join location as l on us.location_id = l.location_id where us.user_id = ? and us.is_finished = ?");
+        pstmt.setString(1, userId);
+        pstmt.setBoolean(2, false);
+        ResultSet rs = pstmt.executeQuery();
+        rs.next();
+        System.out.println(rs.getString(1) + "님의 좌석");
+        System.out.println(" |          시작시간       |         종료시간       |        좌석     ㅣ");
+        System.out.println(" |  " + rs.getString(2) + "  |  "+ rs.getString(3) +"  | "+rs.getString(4)+" "+rs.getString(5)+" "+rs.getString(6)+" "+rs.getInt(7) + "번 | ");
+
+    }
 }

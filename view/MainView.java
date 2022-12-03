@@ -43,13 +43,15 @@ public class MainView {
          * 6. 관리자 모드
          * 7. 사용종료
          * 8. 좌석사용이력
-         * 9. 시스템종료
+         * 9. 나의자리
+         * 10. 시스템종료
          */
         while(true) {
             System.out.println("--------------------------------------");
             System.out.println(" 1. 회원가입 2. 좌석예약 3. 외출      ");
             System.out.println(" 4. 외출복귀 5. 좌석연장 6. 사용종료    ");
-            System.out.println(" 7. 관리자모드 8. 좌석사용이력 9. 시스템 종료 ");
+            System.out.println(" 7. 관리자모드 8. 좌석사용이력 9. 나의자리 ");
+            System.out.println(" 10. 시스템 종료 ");
             System.out.println("---------------------------------------");
 
             //
@@ -80,11 +82,16 @@ public class MainView {
                     useHistory();
                     break;
                 case 9:
+                    showMySeat();
+                    break;
+                case 10:
                     exit(0);
                     break;
             }
         }
     }
+
+
 
 
     public void signUp() throws IOException, SQLException {
@@ -222,6 +229,12 @@ public class MainView {
         }else{
             System.out.println("존재하지 않는 회원번호 입니다.");
         }
+    }
+    private void showMySeat() throws IOException, SQLException {
+
+        System.out.println("회원번호를 입력해주세요");
+        String userId = br.readLine();
+        userDao.showMySeat(userId);
 
     }
 }
