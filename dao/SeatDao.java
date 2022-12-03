@@ -166,7 +166,7 @@ public class SeatDao {
                     int time = 1;
                     try {
                         while (true) {
-                            if(time == 5){
+                            if(time == 1800){
                                 doEmptySeat(this);
                             }
                             Thread.sleep(1000);
