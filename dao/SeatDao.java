@@ -51,6 +51,7 @@ public class SeatDao {
     }
     public void reserveSeat(String userId, int seatNumber, int locationId) throws SQLException {
 
+
         /**
          * user_seat 에 데이터 삽입,,
          * seat 이용중인 사람 증가

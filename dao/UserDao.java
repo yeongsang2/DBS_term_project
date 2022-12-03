@@ -65,4 +65,32 @@ public class UserDao {
         }
 
     }
+
+    public boolean userTypeCheck(String userId, int locationId) throws SQLException {
+
+        String userType = "";
+        String availableUserType = "";
+        ResultSet rs;
+
+        pstmt = con.prepareStatement("select user_type from user where user_id = ?");
+        pstmt.setString(1,userId);
+        rs = pstmt.executeQuery();
+        rs.next();
+        userType = rs.getString(1);
+
+        // 이용자가 학생이 아닌 일반인이면
+        if(userType.equals("general")){
+            pstmt = con.prepareStatement("select available_user_type from room where location_id = ?");
+            pstmt.setInt(1,locationId);
+            rs = pstmt.executeQuery();
+            rs.next();
+            availableUserType = rs.getString(1);
+            if(availableUserType.equals("student")){
+                return false;
+            }
+
+        }
+        return true;
+
+    }
 }

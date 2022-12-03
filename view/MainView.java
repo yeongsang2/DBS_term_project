@@ -125,8 +125,15 @@ public class MainView {
              * 좌석보여주기, 좌석 선택하기
              */
             System.out.println("조망형 / 스마트 , A / B, 1층 / 2층");
+            System.out.println("2층은 학생만 사용가능합니다. ");
             st= new StringTokenizer(br.readLine());
             int locationId = seatDao.showSeat(new Location(st.nextToken(), st.nextToken(), st.nextToken()));
+
+            //해당 열람실을 사용할수 있는 user_type인지 체크
+            if(!userDao.userTypeCheck(userId, locationId)){
+                System.out.println("해당 열람실은 학생만 이용할 수 있습니다. 1층 열람실을 이용해주세요");
+                return;
+            }
 
             //좌석 선택
             System.out.println("선택할 좌석을 입력해주세요");
